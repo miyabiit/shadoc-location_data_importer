@@ -6,6 +6,7 @@
 
 require "active_record"
 require "mysql2"
+require "fileutils"
 
 # DB connection
 ActiveRecord::Base.establish_connection(
@@ -20,8 +21,10 @@ class Location < ActiveRecord::Base
 end
 
 class LocationDataImporter
-	attr_accessor :location, :key_line, :file_path, :registered_on
+	attr_accessor :location, :key_line, :file_path, :registered_on, :backupdir
 	def initialize
+		@backupdir = "./ldi_backup"
+		Dir.mkdir(@backupdir) unless Dir.exist?(@backupdir)
 	end
 
 	def parse file
@@ -57,7 +60,8 @@ class LocationDataImporter
 	end
 
 	def backup(file)
-		true
+		backupfile = @backupdir + '/' + File.basename(file) + '.bak'
+		FileUtils.mv(file,backupfile)
 	end
 end
 
