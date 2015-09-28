@@ -70,7 +70,11 @@ if __FILE__ == $0
 	ARGV.each do |file|
 		next unless File.exist?(file)
 		if ldi.parse(file)
-			ldi.import
+			begin
+				ldi.import
+			rescue
+				$stderr.print $_
+			end
 			ldi.backup(file)
 		end
 	end
